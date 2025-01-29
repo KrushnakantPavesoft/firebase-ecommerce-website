@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Button,
   TextInput,
@@ -9,11 +8,10 @@ import {
   Alert,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { useGlobalPagesContext } from "../Context/Global.Context";
 
 const SignupPage = () => {
-  const [error, setError] = useState(null);
+  const { handleSignupSubmit, signUpError } = useGlobalPagesContext();
   const form = useForm({
     initialValues: {
       email: "",
@@ -29,22 +27,15 @@ const SignupPage = () => {
     },
   });
 
-  const handleSubmit = async (values) => {
-    setError(null);
-    try {
-      await createUserWithEmailAndPassword(auth, values.email, values.password);
-      alert("Signup successful!");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   return (
     <Container size={420} my={40}>
       <Title align="center">Create an Account</Title>
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        {error && <Alert color="red">{error}</Alert>}
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        {signUpError && <Alert color="red">{signUpError}</Alert>}
+        <form
+          onSubmit={form.onSubmit(() => {
+            handleSignupSubmit(form.values);
+          })}>
           <TextInput
             label="Email"
             placeholder="your@email.com"

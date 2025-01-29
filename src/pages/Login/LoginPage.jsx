@@ -9,11 +9,10 @@ import {
   Alert,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
+import { useGlobalPagesContext } from "../Context/Global.Context";
 
 const LoginPage = () => {
-  const [error, setError] = useState(null);
+  const { handleLoginSubmit, error } = useGlobalPagesContext();
   const form = useForm({
     initialValues: {
       email: "",
@@ -26,22 +25,15 @@ const LoginPage = () => {
     },
   });
 
-  const handleSubmit = async (values) => {
-    setError(null);
-    try {
-      await signInWithEmailAndPassword(auth, values.email, values.password);
-      alert("Login successful!");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   return (
     <Container size={420} my={40}>
       <Title align="center">Login</Title>
       <Paper withBorder shadow="md" p={30} mt={30} radius="md">
         {error && <Alert color="red">{error}</Alert>}
-        <form onSubmit={form.onSubmit(handleSubmit)}>
+        <form
+          onSubmit={form.onSubmit(() => {
+            handleLoginSubmit(form.values);
+          })}>
           <TextInput
             label="Email"
             placeholder="your@email.com"
@@ -63,5 +55,4 @@ const LoginPage = () => {
     </Container>
   );
 };
-
 export default LoginPage;
