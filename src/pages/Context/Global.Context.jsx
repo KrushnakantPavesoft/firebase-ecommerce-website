@@ -2,7 +2,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { createContext, use, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { auth } from "../../firebase/firebase";
 
 const GlobalPagesContext = createContext({
@@ -13,11 +13,14 @@ const GlobalPagesContext = createContext({
   handleSignupSubmit: () => {},
   signUpError: null,
   cartItem: [],
+  handleAddToCart: () => {},
 });
 
 export const GlobalPagesProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [signUpError, setSignUpError] = useState(null);
+
+  const [cartItem, setCartItem] = useState([]);
 
   //Login function
   const handleLoginSubmit = async (values) => {
@@ -42,6 +45,24 @@ export const GlobalPagesProvider = ({ children }) => {
     }
   };
 
+  const handleAddToCart = ({ product }) => {
+    // Add product to the cart
+    const updatedCart = [...cartItem, product];
+
+    // Update state and save to localStorage
+    setCartItem(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+
+    console.log("Added to cart:", product);
+  };
+
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      setCartItem(JSON.parse(storedCart));
+    }
+  }, []);
+
   return (
     <>
       <GlobalPagesContext.Provider
@@ -52,6 +73,8 @@ export const GlobalPagesProvider = ({ children }) => {
           setError,
           handleSignupSubmit,
           signUpError,
+          handleAddToCart,
+          cartItem,
         }}>
         {children}
       </GlobalPagesContext.Provider>

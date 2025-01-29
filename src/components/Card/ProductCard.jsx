@@ -8,8 +8,11 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+import { use } from "react";
+import { useGlobalPagesContext } from "../../pages/Context/Global.Context";
 
 const ProductCard = ({ product }) => {
+  const { handleAddToCart } = useGlobalPagesContext();
   return (
     <Card
       shadow="sm"
@@ -43,7 +46,14 @@ const ProductCard = ({ product }) => {
         </Badge>
       </Flex>
 
-      <Button fullWidth variant="light" color="teal" mt="lg">
+      <Button
+        fullWidth
+        variant="light"
+        color="teal"
+        mt="lg"
+        onClick={() => {
+          handleAddToCart({ product });
+        }}>
         Add to Cart
       </Button>
     </Card>

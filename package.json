@@ -6,6 +6,7 @@
     "@mantine/core": "^7.16.1",
     "@mantine/form": "^7.16.1",
     "@mantine/hooks": "^7.16.1",
+    "@tabler/icons-react": "^3.29.0",
     "cra-template": "1.2.0",
     "firebase": "^11.2.0",
     "react": "^19.0.0",
